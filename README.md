@@ -74,9 +74,54 @@ keluaran:
 
 ![image](https://user-images.githubusercontent.com/62486840/147631784-bc78683e-2ca2-490c-8ccb-b4e0160e7008.png)
 
+sehingga perhitungan pertumbuhan penjualan adalah sebagai berikut:
 
+**%Growth Penjualan** = (6717 – 8694)/8694 = -22%
+**%Growth Revenue**   = (607548320 – 799579310)/ 799579310 = -24%
 
+### 3. Apakah jumlah customers xyz.com semakin bertambah?
+Penambahan jumlah customers dapat diukur dengan membandingkan total jumlah customers yang registrasi di periode saat ini dengan total jumlah customers yang registrasi diakhir periode sebelumnya.
+```
+SELECT 
+	quarter(createdate) as quarter, 
+	count(distinct customerid) as total_customers 
+FROM 
+	(SELECT 
+     		customerid,
+		createdate,
+		quarter(createdate) as quarter 
+     	FROM customer 
+WHERE 
+	createdate between '2004-01-01' and '2004-06-30') as tabel_b
+GROUP BY 
+	quarter(createdate);
+```
+keluaran:
 
+![image](https://user-images.githubusercontent.com/62486840/147632602-8a4f983d-93b5-4468-ac77-069f1bb6787e.png)
+
+### 4. Seberapa banyak customers tersebut yang sudah melakukan transaksi?
+Problem ini merupakan kelanjutan dari problem sebelumnya yaitu dari sejumlah customer yang registrasi di periode quarter-1 dan quarter-2, berapa banyak yang sudah melakukan transaksi
+```
+SELECT 
+	quarter(createdate) as quarter, 
+    count(distinct customerid) as total_customers 
+FROM 
+	(SELECT 
+     	customerid,
+     	createdate,
+     	quarter(createdate) as quarter 
+     FROM customer 
+     WHERE createdate between '2004-01-01' and '2004-06-30' and customerid in 
+ (select distinct customerid from orders_1
+UNION
+select distinct customerid from orders_2)) as tabel_b
+GROUP BY 
+	quarter(createdate);
+```
+keluaran:
+
+![image](https://user-images.githubusercontent.com/62486840/147632932-937d37c1-131d-49aa-9963-b87e64dd2c5f.png)
 
 
 
